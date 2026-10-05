@@ -117,8 +117,21 @@
 
     <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 gap-4 items-start justify-center flex-grow">
         
-        <!-- LEFT PANEL: HOLD PIECE & CONTROLS INFO (Hidden or stacked on mobile) -->
+        <!-- LEFT PANEL: CONTROLS & HOLD PIECE -->
         <div class="md:col-span-3 flex flex-col gap-4 order-2 md:order-1">
+            <!-- Keyboard Instructions / Controls Panel (Top Left) -->
+            <div class="glass-panel p-4 rounded-2xl flex flex-col gap-2 text-xs text-gray-300">
+                <h3 class="font-orbitron text-cyan-400 text-sm font-bold border-b border-gray-800 pb-1 mb-1 flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad"></i> CONTROLS
+                </h3>
+                <div class="flex justify-between items-center"><span>Move Left / Right</span> <span><kbd>←</kbd> <kbd>→</kbd></span></div>
+                <div class="flex justify-between items-center"><span>Rotate Clockwise</span> <span><kbd>↑</kbd> / <kbd>W</kbd></span></div>
+                <div class="flex justify-between items-center"><span>Soft Drop</span> <span><kbd>↓</kbd> / <kbd>S</kbd></span></div>
+                <div class="flex justify-between items-center"><span>Hard Drop</span> <span><kbd>Space</kbd></span></div>
+                <div class="flex justify-between items-center"><span>Hold Piece</span> <span><kbd>C</kbd> / <kbd>Shift</kbd></span></div>
+                <div class="flex justify-between items-center"><span>Pause Game</span> <span><kbd>P</kbd> / <kbd>Esc</kbd></span></div>
+            </div>
+
             <!-- Hold Panel -->
             <div class="glass-panel glow-cyan p-4 rounded-2xl flex flex-col items-center">
                 <h2 class="text-xs font-orbitron font-semibold tracking-widest text-cyan-400 uppercase mb-2 flex items-center gap-2">
@@ -143,17 +156,6 @@
                     <div class="text-[10px] font-orbitron text-gray-400">LINES</div>
                     <div id="lines-mobile" class="text-base font-orbitron font-bold text-yellow-400">0</div>
                 </div>
-            </div>
-
-            <!-- Keyboard Instructions (Desktop Only) -->
-            <div class="glass-panel p-4 rounded-2xl hidden md:flex flex-col gap-2 text-xs text-gray-300">
-                <h3 class="font-orbitron text-cyan-400 text-sm font-bold border-b border-gray-800 pb-1 mb-1">CONTROLS</h3>
-                <div class="flex justify-between items-center"><span>Move Left / Right</span> <span><kbd>←</kbd> <kbd>→</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Rotate Clockwise</span> <span><kbd>↑</kbd> / <kbd>W</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Soft Drop</span> <span><kbd>↓</kbd> / <kbd>S</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Hard Drop</span> <span><kbd>Space</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Hold Piece</span> <span><kbd>C</kbd> / <kbd>Shift</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Pause Game</span> <span><kbd>P</kbd> / <kbd>Esc</kbd></span></div>
             </div>
         </div>
 
