@@ -202,6 +202,33 @@
                     </button>
                 </div>
             </div>
+
+            <!-- TOUCH CONTROLS PANEL (At bottom of game panel) -->
+            <div class="w-full max-w-xs mt-3 px-1 md:hidden">
+                <div class="grid grid-cols-5 gap-2">
+                    <button id="touch-hold" class="btn-touch glass-panel p-3 rounded-xl border border-cyan-500/30 text-cyan-400 font-orbitron font-bold text-xs flex flex-col items-center justify-center gap-1 active:bg-cyan-950">
+                        <i class="fa-solid fa-hand-holding"></i>
+                        <span class="text-[9px]">HOLD</span>
+                    </button>
+                    <button id="touch-left" class="btn-touch glass-panel p-3 rounded-xl border border-slate-700 text-white font-bold flex justify-center items-center active:bg-slate-800">
+                        <i class="fa-solid fa-arrow-left text-lg"></i>
+                    </button>
+                    <button id="touch-rotate" class="btn-touch glass-panel p-3 rounded-xl border border-fuchsia-500/40 text-fuchsia-400 font-bold flex justify-center items-center active:bg-fuchsia-950">
+                        <i class="fa-solid fa-rotate-right text-lg"></i>
+                    </button>
+                    <button id="touch-right" class="btn-touch glass-panel p-3 rounded-xl border border-slate-700 text-white font-bold flex justify-center items-center active:bg-slate-800">
+                        <i class="fa-solid fa-arrow-right text-lg"></i>
+                    </button>
+                    <button id="touch-drop" class="btn-touch glass-panel p-3 rounded-xl border border-yellow-500/40 text-yellow-400 font-bold flex justify-center items-center active:bg-yellow-950">
+                        <i class="fa-solid fa-angles-down text-lg"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-center">
+                    <button id="touch-soft" class="btn-touch w-full py-2 glass-panel rounded-xl border border-slate-800 text-gray-300 font-orbitron text-xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrow-down"></i> SOFT DROP
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- RIGHT PANEL: NEXT QUEUE & STATS DISPLAY -->
@@ -243,32 +270,6 @@
             </div>
         </div>
     </main>
-
-    <div class="w-full max-w-md mt-4 mb-2 px-2 md:hidden">
-        <div class="grid grid-cols-5 gap-2">
-            <button id="touch-hold" class="btn-touch glass-panel p-3 rounded-xl border border-cyan-500/30 text-cyan-400 font-orbitron font-bold text-xs flex flex-col items-center gap-1 active:bg-cyan-950">
-                <i class="fa-solid fa-hand-holding"></i>
-                <span class="text-[9px]">HOLD</span>
-            </button>
-            <button id="touch-left" class="btn-touch glass-panel p-3 rounded-xl border border-slate-700 text-white font-bold flex justify-center items-center active:bg-slate-800">
-                <i class="fa-solid fa-arrow-left text-lg"></i>
-            </button>
-            <button id="touch-rotate" class="btn-touch glass-panel p-3 rounded-xl border border-fuchsia-500/40 text-fuchsia-400 font-bold flex justify-center items-center active:bg-fuchsia-950">
-                <i class="fa-solid fa-rotate-right text-lg"></i>
-            </button>
-            <button id="touch-right" class="btn-touch glass-panel p-3 rounded-xl border border-slate-700 text-white font-bold flex justify-center items-center active:bg-slate-800">
-                <i class="fa-solid fa-arrow-right text-lg"></i>
-            </button>
-            <button id="touch-drop" class="btn-touch glass-panel p-3 rounded-xl border border-yellow-500/40 text-yellow-400 font-bold flex justify-center items-center active:bg-yellow-950">
-                <i class="fa-solid fa-angles-down text-lg"></i>
-            </button>
-        </div>
-        <div class="mt-2 text-center">
-            <button id="touch-soft" class="btn-touch w-full py-2 glass-panel rounded-xl border border-slate-800 text-gray-300 font-orbitron text-xs flex items-center justify-center gap-2">
-                <i class="fa-solid fa-arrow-down"></i> SOFT DROP
-            </button>
-        </div>
-    </div>
 
     <footer class="mt-4 text-center text-xs text-gray-500 font-orbitron">
         NEON TETRIS &copy; 2026 | Built with HTML5 Canvas & Web Audio API
