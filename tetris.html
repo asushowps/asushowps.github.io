@@ -117,28 +117,30 @@
 
     <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 gap-4 items-start justify-center flex-grow">
         
-        <!-- LEFT PANEL: CONTROLS & HOLD PIECE -->
+        <!-- LEFT PANEL: STATS DISPLAY -->
         <div class="md:col-span-3 flex flex-col gap-4 order-2 md:order-1">
-            <!-- Keyboard Instructions / Controls Panel (Top Left) -->
-            <div class="glass-panel p-4 rounded-2xl flex flex-col gap-2 text-xs text-gray-300">
-                <h3 class="font-orbitron text-cyan-400 text-sm font-bold border-b border-gray-800 pb-1 mb-1 flex items-center gap-2">
-                    <i class="fa-solid fa-gamepad"></i> CONTROLS
-                </h3>
-                <div class="flex justify-between items-center"><span>Move Left / Right</span> <span><kbd>←</kbd> <kbd>→</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Rotate Clockwise</span> <span><kbd>↑</kbd> / <kbd>W</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Soft Drop</span> <span><kbd>↓</kbd> / <kbd>S</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Hard Drop</span> <span><kbd>Space</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Hold Piece</span> <span><kbd>C</kbd> / <kbd>Shift</kbd></span></div>
-                <div class="flex justify-between items-center"><span>Pause Game</span> <span><kbd>P</kbd> / <kbd>Esc</kbd></span></div>
-            </div>
-
-            <!-- Hold Panel -->
-            <div class="glass-panel glow-cyan p-4 rounded-2xl flex flex-col items-center">
-                <h2 class="text-xs font-orbitron font-semibold tracking-widest text-cyan-400 uppercase mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-hand-holding"></i> HOLD <span class="text-[10px] text-gray-400">(Shift/C)</span>
+            <!-- Score / Level / High Score (Desktop) -->
+            <div class="glass-panel p-4 rounded-2xl hidden md:flex flex-col gap-3">
+                <h2 class="text-xs font-orbitron font-semibold tracking-widest text-cyan-400 uppercase mb-1 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-simple"></i> STATISTICS
                 </h2>
-                <div class="w-28 h-28 bg-slate-950/80 rounded-xl border border-cyan-900/50 flex items-center justify-center overflow-hidden">
-                    <canvas id="hold-canvas" width="110" height="110"></canvas>
+                <div>
+                    <div class="text-xs font-orbitron text-gray-400 uppercase">SCORE</div>
+                    <div id="score-display" class="text-2xl font-orbitron font-extrabold text-cyan-400 text-glow-cyan">0</div>
+                </div>
+                <div>
+                    <div class="text-xs font-orbitron text-gray-400 uppercase">HIGH SCORE</div>
+                    <div id="highscore-display" class="text-xl font-orbitron font-bold text-fuchsia-400">0</div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 border-t border-gray-800 pt-2">
+                    <div>
+                        <div class="text-[10px] font-orbitron text-gray-400 uppercase">LEVEL</div>
+                        <div id="level-display" class="text-lg font-orbitron font-bold text-yellow-400">1</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] font-orbitron text-gray-400 uppercase">LINES</div>
+                        <div id="lines-display" class="text-lg font-orbitron font-bold text-green-400">0</div>
+                    </div>
                 </div>
             </div>
 
@@ -248,19 +250,19 @@
                     <div class="text-xs font-orbitron text-gray-400 uppercase">SCORE</div>
                     <div id="score-display" class="text-2xl font-orbitron font-extrabold text-cyan-400 text-glow-cyan">0</div>
                 </div>
-                <div>
-                    <div class="text-xs font-orbitron text-gray-400 uppercase">HIGH SCORE</div>
-                    <div id="highscore-display" class="text-xl font-orbitron font-bold text-fuchsia-400">0</div>
-                </div>
-                <div class="grid grid-cols-2 gap-2 border-t border-gray-800 pt-2">
-                    <div>
-                        <div class="text-[10px] font-orbitron text-gray-400 uppercase">LEVEL</div>
-                        <div id="level-display" class="text-lg font-orbitron font-bold text-yellow-400">1</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] font-orbitron text-gray-400 uppercase">LINES</div>
-                        <div id="lines-display" class="text-lg font-orbitron font-bold text-green-400">0</div>
-                    </div>
+        <!-- RIGHT PANEL: NEXT QUEUE -->
+        <div class="md:col-span-3 flex flex-col gap-4 order-3">
+            <!-- Next Pieces Preview -->
+            <div class="glass-panel glow-cyan p-4 rounded-2xl flex flex-col items-center">
+                <h2 class="text-xs font-orbitron font-semibold tracking-widest text-fuchsia-400 uppercase mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-forward"></i> NEXT PIECES
+                </h2>
+                <div class="w-28 h-72 bg-slate-950/80 rounded-xl border border-fuchsia-900/50 flex flex-col items-center justify-evenly overflow-hidden py-2">
+                    <canvas id="next-canvas-1" width="90" height="70"></canvas>
+                    <div class="w-12 h-px bg-slate-800"></div>
+                    <canvas id="next-canvas-2" width="80" height="60"></canvas>
+                    <div class="w-12 h-px bg-slate-800"></div>
+                    <canvas id="next-canvas-3" width="70" height="50"></canvas>
                 </div>
             </div>
         </div>
@@ -439,9 +441,6 @@
         const mainCanvas = document.getElementById('tetris-canvas');
         const ctx = mainCanvas.getContext('2d');
 
-        const holdCanvas = document.getElementById('hold-canvas');
-        const holdCtx = holdCanvas.getContext('2d');
-
         const nextCanvases = [
             document.getElementById('next-canvas-1').getContext('2d'),
             document.getElementById('next-canvas-2').getContext('2d'),
@@ -470,8 +469,6 @@
         let isPlaying = false;
 
         let currentPiece = null;
-        let holdPiece = null;
-        let canHold = true;
         let nextQueue = [];
 
         let dropCounter = 0;
@@ -517,7 +514,6 @@
             if (nextQueue.length < 4) refillQueue();
             const nextKey = nextQueue.shift();
             currentPiece = createPiece(nextKey);
-            canHold = true;
 
             // Check immediate collision -> Game Over
             if (collide(grid, currentPiece)) {
@@ -890,9 +886,6 @@
         }
 
         function drawSidePanels() {
-            // Draw Hold
-            drawPreviewPiece(holdCtx, holdPiece, holdCanvas.width, holdCanvas.height);
-
             // Draw Next 3
             for (let i = 0; i < 3; i++) {
                 const nextKey = nextQueue[i];
@@ -926,8 +919,6 @@
             isGameOver = false;
             isPaused = false;
             isPlaying = true;
-            holdPiece = null;
-            canHold = true;
             nextQueue = [];
             particles = [];
 
@@ -989,11 +980,6 @@
                 case 'Space':
                     e.preventDefault();
                     playerHardDrop();
-                    break;
-                case 'KeyC':
-                case 'ShiftLeft':
-                case 'ShiftRight':
-                    playerHold();
                     break;
                 case 'KeyP':
                 case 'Escape':
