@@ -206,9 +206,9 @@
             <!-- TOUCH CONTROLS PANEL (At bottom of game panel) -->
             <div class="w-full max-w-xs mt-3 px-1 md:hidden">
                 <div class="grid grid-cols-5 gap-2">
-                    <button id="touch-hold" class="btn-touch glass-panel p-3 rounded-xl border border-cyan-500/30 text-cyan-400 font-orbitron font-bold text-xs flex flex-col items-center justify-center gap-1 active:bg-cyan-950">
-                        <i class="fa-solid fa-hand-holding"></i>
-                        <span class="text-[9px]">HOLD</span>
+                    <button id="touch-soft" class="btn-touch glass-panel p-3 rounded-xl border border-cyan-500/30 text-cyan-400 font-orbitron font-bold text-xs flex flex-col items-center justify-center gap-1 active:bg-cyan-950">
+                        <i class="fa-solid fa-arrow-down text-lg"></i>
+                        <span class="text-[8px]">SOFT</span>
                     </button>
                     <button id="touch-left" class="btn-touch glass-panel p-3 rounded-xl border border-slate-700 text-white font-bold flex justify-center items-center active:bg-slate-800">
                         <i class="fa-solid fa-arrow-left text-lg"></i>
@@ -221,11 +221,6 @@
                     </button>
                     <button id="touch-drop" class="btn-touch glass-panel p-3 rounded-xl border border-yellow-500/40 text-yellow-400 font-bold flex justify-center items-center active:bg-yellow-950">
                         <i class="fa-solid fa-angles-down text-lg"></i>
-                    </button>
-                </div>
-                <div class="mt-2 text-center">
-                    <button id="touch-soft" class="btn-touch w-full py-2 glass-panel rounded-xl border border-slate-800 text-gray-300 font-orbitron text-xs flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-arrow-down"></i> SOFT DROP
                     </button>
                 </div>
             </div>
@@ -1013,7 +1008,6 @@
         document.getElementById('touch-rotate').addEventListener('click', playerRotate);
         document.getElementById('touch-soft').addEventListener('click', playerSoftDrop);
         document.getElementById('touch-drop').addEventListener('click', playerHardDrop);
-        document.getElementById('touch-hold').addEventListener('click', playerHold);
 
         // Header Control Buttons
         document.getElementById('start-game-btn').addEventListener('click', startGame);
