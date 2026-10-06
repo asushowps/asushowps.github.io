@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMDb Check-ins 2016 Movie Gallery</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        imdb: {
+                            yellow: '#f5c518',
+                            dark: '#121212',
+                            card: '#1f1f1f',
+                            hover: '#2c2c2c',
+                            accent: '#e5a00d'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbars and sleek cinema effects */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f5c518;
+        }
+        .poster-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .poster-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 10px 10px -5px rgba(245, 197, 24, 0.15);
+        }
+        .glass-panel {
+            background: rgba(31, 31, 31, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-[#0e0e11] text-gray-100 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-gray-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <!-- Brand Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-imdb-yellow text-black font-extrabold px-3 py-1.5 rounded-md text-xl tracking-tighter shadow-md">
+                        IMDb
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                            Check-ins Archive
+                            <span class="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-0.5 rounded-full font-semibold">2016 Collection</span>
+                        </h1>
+                        <p class="text-xs text-gray-400">49 Film Entries • Logged June 19, 2016 – October 23, 2016</p>
+                    </div>
+                </div>
+
+                <!-- Controls: Search & View Toggles -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 sm:w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" id="searchInput" placeholder="Search by title or year..." 
+                            class="w-full bg-gray-900/90 border border-gray-700/80 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-imdb-yellow focus:ring-1 focus:ring-imdb-yellow transition">
+                    </div>
+
+                    <!-- Sort Select -->
+                    <select id="sortSelect" class="bg-gray-900 border border-gray-700/80 text-xs sm:text-sm text-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-imdb-yellow">
+                        <option value="entry-asc">Order: #1 → #49</option>
+                        <option value="entry-desc">Order: #49 → #1</option>
+                        <option value="title-asc">Title: A - Z</option>
+                        <option value="year-desc">Release: Newest First</option>
+                        <option value="year-asc">Release: Oldest First</option>
+                    </select>
+
+                    <!-- View Switcher -->
+                    <div class="flex bg-gray-900 p-1 rounded-xl border border-gray-800">
+                        <button id="viewGridBtn" onclick="switchView('grid')" title="Grid View" class="px-3 py-1.5 text-xs font-medium rounded-lg transition bg-imdb-yellow text-black font-semibold">
+                            <i class="fa-solid fa-border-all"></i>
+                        </button>
+                        <button id="viewListBtn" onclick="switchView('list')" title="List View" class="px-3 py-1.5 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                        <button id="viewTimelineBtn" onclick="switchView('timeline')" title="Check-in Timeline" class="px-3 py-1.5 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition">
+                            <i class="fa-solid fa-[# timeline] fa-clock-rotate-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quick Stats Bar -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-3 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-gray-400">Total Entries</div>
+                    <div class="text-xl font-bold text-imdb-yellow">49 Movies</div>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-imdb-yellow/10 flex items-center justify-center text-imdb-yellow">
+                    <i class="fa-solid fa-film text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-3 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-gray-400">First Check-in</div>
+                    <div class="text-sm font-semibold text-gray-200">Jun 19, 2016</div>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
+                    <i class="fa-solid fa-calendar-day text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-3 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-gray-400">Last Check-in</div>
+                    <div class="text-sm font-semibold text-gray-200">Oct 23, 2016</div>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-calendar-check text-lg"></i>
+                </div>
+            </div>
+            <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-3 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-gray-400">Release Span</div>
+                    <div class="text-sm font-semibold text-gray-200">1971 – 2016</div>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
+                    <i class="fa-solid fa-clapperboard text-lg"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Status / Active Filter Bar -->
+        <div id="statusCount" class="text-xs text-gray-400 mb-4 flex items-center justify-between">
+            <span>Showing <strong id="visibleCount" class="text-white">49</strong> of 49 movies in log order</span>
+            <span class="text-gray-500 text-[11px]"><i class="fa-solid fa-circle-info mr-1"></i>Click card for details & trailer options</span>
+        </div>
+
+        <!-- Movie Grid View -->
+        <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
+            <!-- Cards dynamically rendered by JS -->
+        </div>
+
+        <!-- Movie List View (Hidden by default) -->
+        <div id="movieList" class="hidden flex-col gap-3">
+            <!-- List items dynamically rendered by JS -->
+        </div>
+
+        <!-- Movie Timeline View (Hidden by default) -->
+        <div id="movieTimeline" class="hidden relative border-l-2 border-imdb-yellow/30 ml-4 sm:ml-8 pl-6 space-y-6">
+            <!-- Timeline elements dynamically rendered by JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden py-16 text-center">
+            <i class="fa-solid fa-film text-5xl text-gray-600 mb-3"></i>
+            <h3 class="text-lg font-semibold text-gray-300">No movies found</h3>
+            <p class="text-sm text-gray-500 mt-1">Try searching for a different movie title or year.</p>
+            <button onclick="resetSearch()" class="mt-4 px-4 py-2 bg-imdb-yellow text-black text-xs font-bold rounded-lg hover:bg-amber-400 transition">
+                Reset Search Filters
+            </button>
+        </div>
+    </main>
+
+    <!-- Movie Detail Modal -->
+    <div id="movieModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl relative animate-fadeIn transform transition-all">
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-9 h-9 bg-black/60 text-gray-300 hover:text-white rounded-full flex items-center justify-center hover:bg-black transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex flex-col md:flex-row">
+                <!-- Modal Poster Image -->
+                <div class="md:w-1/2 bg-gray-950 flex items-center justify-center p-4 relative min-h-[300px]">
+                    <img id="modalPoster" src="" alt="Movie Poster" class="w-full max-h-[380px] object-cover rounded-xl shadow-lg">
+                    <span id="modalEntryBadge" class="absolute top-6 left-6 bg-imdb-yellow text-black text-xs font-extrabold px-2.5 py-1 rounded-md shadow-md">
+                        #1
+                    </span>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="md:w-1/2 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span id="modalYear" class="text-xs font-bold text-imdb-yellow bg-imdb-yellow/10 border border-imdb-yellow/20 px-2 py-0.5 rounded">2014</span>
+                            <span class="text-xs text-gray-400 flex items-center gap-1">
+                                <i class="fa-solid fa-calendar-day text-gray-500"></i>
+                                Check-in: <span id="modalCheckinDate" class="text-gray-200">06/19/16</span>
+                            </span>
+                        </div>
+
+                        <h2 id="modalTitle" class="text-2xl font-bold text-white leading-tight mb-2">The Signal</h2>
+
+                        <div class="space-y-3 text-xs text-gray-300 mt-4">
+                            <p id="modalDescription" class="text-gray-400 leading-relaxed">
+                                Movie metadata details, cast information, and storyline overview loaded automatically for cinema enthusiasts.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- External Actions -->
+                    <div class="pt-6 border-t border-gray-800/80 flex flex-col gap-2.5">
+                        <a id="modalImdbBtn" href="#" target="_blank" rel="noopener noreferrer" 
+                           class="w-full bg-imdb-yellow hover:bg-amber-400 text-black font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-md">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            Search on IMDb
+                        </a>
+                        <a id="modalTrailerBtn" href="#" target="_blank" rel="noopener noreferrer" 
+                           class="w-full bg-red-600/90 hover:bg-red-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                            <i class="fa-brands fa-youtube text-base"></i>
+                            Watch Trailer on YouTube
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-gray-800/80 bg-gray-950 py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>
+                Data sourced from <span class="text-gray-300 font-semibold">CHECKINS (IMDB) 2022_1.pdf</span>
+            </div>
+            <div>
+                Sorted in order of entry (#1 to #49) • Interactive Film Archive
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Raw Dataset from PDF Document
+        const moviesData = [
+            { num: 1, date: "06/19/16", title: "The Signal", year: 2014 },
+            { num: 2, date: "06/19/16", title: "Dolan's Cadillac", year: 2009 },
+            { num: 3, date: "06/19/16", title: "The Game", year: 1997 },
+            { num: 4, date: "06/19/16", title: "10 Cloverfield Lane", year: 2016 },
+            { num: 5, date: "06/19/16", title: "The Huntsman: Winter's War", year: 2016 },
+            { num: 6, date: "06/19/16", title: "The Ones Below", year: 2015 },
+            { num: 7, date: "06/19/16", title: "Approaching the Unknown", year: 2016 },
+            { num: 8, date: "06/29/16", title: "Pandemic", year: 2016 },
+            { num: 9, date: "06/29/16", title: "Risen", year: 2016 },
+            { num: 10, date: "06/29/16", title: "The Quiet Earth", year: 1985 },
+            { num: 11, date: "06/29/16", title: "Wolf Creek", year: 2005 },
+            { num: 12, date: "07/02/16", title: "Home Invasion", year: 2016 },
+            { num: 13, date: "07/02/16", title: "You're Next", year: 2011 },
+            { num: 14, date: "07/04/16", title: "The Girl in the Photographs", year: 2015 },
+            { num: 15, date: "07/08/16", title: "Reasonable Doubt", year: 2014 },
+            { num: 16, date: "07/08/16", title: "The Cable Guy", year: 1996 },
+            { num: 17, date: "07/12/16", title: "Straw Dogs", year: 1971 },
+            { num: 18, date: "07/12/16", title: "Amnesiac", year: 2014 },
+            { num: 19, date: "07/12/16", title: "Jupiter Ascending", year: 2015 },
+            { num: 20, date: "07/24/16", title: "Yip Man 3", year: 2015 },
+            { num: 21, date: "07/24/16", title: "Dark City", year: 1998 },
+            { num: 22, date: "08/01/16", title: "Requiem for a Dream", year: 2000 },
+            { num: 23, date: "08/01/16", title: "The Lookout", year: 2007 },
+            { num: 24, date: "08/01/16", title: "Frailty", year: 2001 },
+            { num: 25, date: "08/08/16", title: "Before I Wake", year: 2016 },
+            { num: 26, date: "08/08/16", title: "Trance", year: 2013 },
+            { num: 27, date: "08/10/16", title: "The Legend of Tarzan", year: 2016 },
+            { num: 28, date: "08/13/16", title: "Taken 3", year: 2014 },
+            { num: 29, date: "08/13/16", title: "Enemy", year: 2013 },
+            { num: 30, date: "08/13/16", title: "Timecrimes", year: 2007 },
+            { num: 31, date: "08/16/16", title: "Triangle", year: 2009 },
+            { num: 32, date: "08/17/16", title: "Brick", year: 2005 },
+            { num: 33, date: "08/22/16", title: "Mulholland Drive", year: 2001 },
+            { num: 34, date: "08/22/16", title: "Primer", year: 2004 },
+            { num: 35, date: "08/26/16", title: "Road to Perdition", year: 2002 },
+            { num: 36, date: "08/28/16", title: "Warcraft", year: 2016 },
+            { num: 37, date: "08/30/16", title: "Blue Ruin", year: 2013 },
+            { num: 38, date: "09/04/16", title: "The Way Back", year: 2010 },
+            { num: 39, date: "09/09/16", title: "Raising Cain", year: 1992 },
+            { num: 40, date: "09/11/16", title: "The Jungle Book", year: 2016 },
+            { num: 41, date: "09/20/16", title: "The Hateful Eight", year: 2015 },
+            { num: 42, date: "09/26/16", title: "Young Frankenstein", year: 1974 },
+            { num: 43, date: "09/26/16", title: "The Shallows", year: 2016 },
+            { num: 44, date: "10/15/16", title: "Dead Calm", year: 1989 },
+            { num: 45, date: "10/15/16", title: "The Secret in Their Eyes", year: 2009 },
+            { num: 46, date: "10/19/16", title: "ARQ", year: 2016 },
+            { num: 47, date: "10/19/16", title: "Don't Breathe", year: 2016 },
+            { num: 48, date: "10/23/16", title: "The Lives of Others", year: 2006 },
+            { num: 49, date: "10/23/16", title: "The VVitch: A New-England Folktale", year: 2015 }
+        ];
+
+        // Cached poster images map
+        const posterCache = {};
+
+        // Generate dynamic visual SVG poster fallback as instant visual
+        function generateFallbackPoster(title, year, num) {
+            const gradients = [
+                ['#1a103c', '#2b5876', '#4e4376'],
+                ['#200122', '#6f0000', '#200122'],
+                ['#0f2027', '#203a43', '#2c5364'],
+                ['#1f1c2c', '#928dab', '#1f1c2c'],
+                ['#000000', '#434343', '#111111'],
+                ['#111827', '#1f2937', '#374151']
+            ];
+            const g = gradients[num % gradients.length];
+            const titleEscaped = title.replace(/'/g, "&apos;");
+            
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 450" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="grad${num}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${g[0]}" />
+                        <stop offset="50%" stop-color="${g[1]}" />
+                        <stop offset="100%" stop-color="${g[2]}" />
+                    </linearGradient>
+                </defs>
+                <rect width="300" height="450" fill="url(#grad${num})" />
+                <circle cx="150" cy="180" r="90" fill="none" stroke="rgba(245,197,24,0.15)" stroke-width="2" />
+                <text x="150" y="70" fill="#f5c518" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle" letter-spacing="3">ENTRY #${num}</text>
+                <text x="150" y="200" fill="#ffffff" font-family="'Cinzel', serif" font-size="22" font-weight="bold" text-anchor="middle">
+                    ${formatSvgText(titleEscaped)}
+                </text>
+                <text x="150" y="380" fill="#e5a00d" font-family="sans-serif" font-size="16" font-weight="600" text-anchor="middle">(${year})</text>
+                <rect x="20" y="410" width="260" height="2" fill="rgba(255,255,255,0.2)" />
+            </svg>`;
+            
+            return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+        }
+
+        function formatSvgText(text) {
+            const words = text.split(' ');
+            if (words.length <= 3) {
+                return `<tspan x="150" dy="0">${words.join(' ')}</tspan>`;
+            }
+            const mid = Math.ceil(words.length / 2);
+            const line1 = words.slice(0, mid).join(' ');
+            const line2 = words.slice(mid).join(' ');
+            return `<tspan x="150" dy="-10">${line1}</tspan><tspan x="150" dy="28">${line2}</tspan>`;
+        }
+
+        async function fetchPosterUrl(movie) {
+            if (posterCache[movie.num]) return posterCache[movie.num];
+
+            const fallback = generateFallbackPoster(movie.title, movie.year, movie.num);
+            
+            try {
+                // Query Wikipedia API for film article poster
+                const queryTitle = `${movie.title} (${movie.year} film)`;
+                const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(queryTitle)}|${encodeURIComponent(movie.title + " film")}&prop=pageimages&pithumbsize=400&format=json&origin=*`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.query && data.query.pages) {
+                    const pages = data.query.pages;
+                    for (let pageId in pages) {
+                        if (pages[pageId].thumbnail && pages[pageId].thumbnail.source) {
+                            posterCache[movie.num] = pages[pageId].thumbnail.source;
+                            return pages[pageId].thumbnail.source;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn(`Wiki fetch failed for ${movie.title}, fallback used.`, err);
+            }
+
+            posterCache[movie.num] = fallback;
+            return fallback;
+        }
+
+        let currentView = 'grid';
+        let activeMovies = [...moviesData];
+
+        function renderGallery() {
+            const gridContainer = document.getElementById('movieGrid');
+            const listContainer = document.getElementById('movieList');
+            const timelineContainer = document.getElementById('movieTimeline');
+            const emptyState = document.getElementById('emptyState');
+            
+            document.getElementById('visibleCount').innerText = activeMovies.length;
+
+            if (activeMovies.length === 0) {
+                gridContainer.classList.add('hidden');
+                listContainer.classList.add('hidden');
+                timelineContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // Grid View Rendering
+            gridContainer.innerHTML = activeMovies.map(m => {
+                const initialSrc = posterCache[m.num] || generateFallbackPoster(m.title, m.year, m.num);
+                return `
+                <div class="poster-card bg-gray-900 border border-gray-800 rounded-xl overflow-hidden cursor-pointer flex flex-col justify-between group relative"
+                     onclick="openModal(${m.num})">
+                    <div class="relative aspect-[2/3] bg-gray-950 overflow-hidden">
+                        <img id="poster-img-${m.num}" src="${initialSrc}" alt="${m.title}" 
+                             class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+                             onerror="this.src='${generateFallbackPoster(m.title, m.year, m.num)}'">
+                        
+                        <div class="absolute top-2 left-2 bg-black/75 backdrop-blur-md border border-gray-700/60 text-imdb-yellow font-extrabold text-[10px] sm:text-xs px-2 py-0.5 rounded-md shadow">
+                            #${m.num}
+                        </div>
+                        
+                        <div class="absolute bottom-2 right-2 bg-black/80 backdrop-blur-sm text-gray-300 text-[10px] px-2 py-0.5 rounded border border-gray-800">
+                            ${m.year}
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 bg-gray-900 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-xs sm:text-sm text-white line-clamp-1 group-hover:text-imdb-yellow transition">
+                                ${m.title}
+                            </h3>
+                            <div class="flex items-center justify-between mt-1 text-[11px] text-gray-400">
+                                <span>Checked-in:</span>
+                                <span class="text-gray-300 font-medium">${m.date}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            // List View Rendering
+            listContainer.innerHTML = activeMovies.map(m => `
+                <div onclick="openModal(${m.num})" 
+                     class="bg-gray-900/80 hover:bg-gray-800/90 border border-gray-800 rounded-xl p-3 flex items-center justify-between gap-4 cursor-pointer transition">
+                    <div class="flex items-center gap-4">
+                        <span class="w-8 text-center text-sm font-extrabold text-imdb-yellow bg-imdb-yellow/10 py-1 rounded">
+                            #${m.num}
+                        </span>
+                        <div>
+                            <h4 class="font-bold text-sm text-white hover:text-imdb-yellow transition">${m.title}</h4>
+                            <span class="text-xs text-gray-400">Release Year: ${m.year}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-gray-400">
+                        <div class="hidden sm:block">
+                            <i class="fa-solid fa-calendar text-gray-500 mr-1"></i> Check-in: <strong class="text-gray-200">${m.date}</strong>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-600"></i>
+                    </div>
+                </div>
+            `).join('');
+
+            // Timeline View Rendering
+            timelineContainer.innerHTML = activeMovies.map(m => `
+                <div class="relative group" onclick="openModal(${m.num})">
+                    <div class="absolute -left-[31px] top-1.5 w-3 h-3 bg-imdb-yellow rounded-full border-2 border-gray-950 group-hover:scale-125 transition"></div>
+                    <div class="bg-gray-900/90 hover:bg-gray-800 border border-gray-800 p-4 rounded-xl cursor-pointer transition flex justify-between items-center">
+                        <div>
+                            <div class="text-[11px] font-semibold text-imdb-yellow mb-0.5">Entry #${m.num} • ${m.date}</div>
+                            <h3 class="font-bold text-base text-white">${m.title}</h3>
+                        </div>
+                        <span class="text-xs bg-gray-800 text-gray-300 px-2.5 py-1 rounded-full border border-gray-700">${m.year}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Asynchronously load higher-resolution Wikipedia posters
+            activeMovies.forEach(m => {
+                fetchPosterUrl(m).then(imgUrl => {
+                    const el = document.getElementById(`poster-img-${m.num}`);
+                    if (el && imgUrl) {
+                        el.src = imgUrl;
+                    }
+                });
+            });
+        }
+
+        function switchView(view) {
+            currentView = view;
+            const grid = document.getElementById('movieGrid');
+            const list = document.getElementById('movieList');
+            const timeline = document.getElementById('movieTimeline');
+            
+            const btnGrid = document.getElementById('viewGridBtn');
+            const btnList = document.getElementById('viewListBtn');
+            const btnTime = document.getElementById('viewTimelineBtn');
+
+            // Reset buttons
+            [btnGrid, btnList, btnTime].forEach(btn => {
+                btn.className = "px-3 py-1.5 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition";
+            });
+
+            grid.classList.add('hidden');
+            list.classList.add('hidden');
+            timeline.classList.add('hidden');
+
+            if (view === 'grid') {
+                grid.classList.remove('hidden');
+                btnGrid.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-imdb-yellow text-black transition";
+            } else if (view === 'list') {
+                list.classList.remove('hidden');
+                btnList.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-imdb-yellow text-black transition";
+            } else if (view === 'timeline') {
+                timeline.classList.remove('hidden');
+                btnTime.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-imdb-yellow text-black transition";
+            }
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const sortBy = document.getElementById('sortSelect').value;
+
+            // Filter search
+            activeMovies = moviesData.filter(m => {
+                return m.title.toLowerCase().includes(searchTerm) || 
+                       m.year.toString().includes(searchTerm) ||
+                       m.date.includes(searchTerm);
+            });
+
+            // Sorting logic
+            if (sortBy === 'entry-asc') {
+                activeMovies.sort((a, b) => a.num - b.num);
+            } else if (sortBy === 'entry-desc') {
+                activeMovies.sort((a, b) => b.num - a.num);
+            } else if (sortBy === 'title-asc') {
+                activeMovies.sort((a, b) => a.title.localeCompare(b.title));
+            } else if (sortBy === 'year-desc') {
+                activeMovies.sort((a, b) => b.year - a.year);
+            } else if (sortBy === 'year-asc') {
+                activeMovies.sort((a, b) => a.year - b.year);
+            }
+
+            renderGallery();
+        }
+
+        function resetSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('sortSelect').value = 'entry-asc';
+            applyFilters();
+        }
+
+        function openModal(entryNum) {
+            const movie = moviesData.find(m => m.num === entryNum);
+            if (!movie) return;
+
+            document.getElementById('modalTitle').innerText = movie.title;
+            document.getElementById('modalYear').innerText = movie.year;
+            document.getElementById('modalCheckinDate').innerText = movie.date;
+            document.getElementById('modalEntryBadge').innerText = `#${movie.num}`;
+
+            const posterSrc = posterCache[movie.num] || generateFallbackPoster(movie.title, movie.year, movie.num);
+            document.getElementById('modalPoster').src = posterSrc;
+
+            document.getElementById('modalDescription').innerText = 
+                `"${movie.title}" (${movie.year}) was checked into the IMDb log on ${movie.date} as entry #${movie.num} of 49.`;
+
+            // External Links
+            document.getElementById('modalImdbBtn').href = `https://www.imdb.com/find?q=${encodeURIComponent(movie.title + ' ' + movie.year)}`;
+            document.getElementById('modalTrailerBtn').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(movie.title + ' ' + movie.year + ' trailer')}`;
+
+            document.getElementById('movieModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('movieModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('sortSelect').addEventListener('change', applyFilters);
+
+            // Modal overlay click to close
+            document.getElementById('movieModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('movieModal')) {
+                    closeModal();
+                }
+            });
+
+            // ESC key to close modal
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // Render initial gallery
+            renderGallery();
+        });
+    </script>
+</body>
+</html>
